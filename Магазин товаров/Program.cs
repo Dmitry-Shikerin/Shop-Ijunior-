@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 
 namespace Магазин_товаров
 {
@@ -80,6 +79,10 @@ namespace Магазин_товаров
                     Console.WriteLine($"{i + 1} {Products[i].Name} {Products[i].Price}");
                 }
             }
+            else
+            {
+                Console.WriteLine("Список товаров пуст");
+            }
         }
     }
 
@@ -127,6 +130,13 @@ namespace Магазин_товаров
 
                 Console.WriteLine("Введите id товара");
                 int productId = ReadInt() - 1;
+
+                if (productId < 0 ||  productId >= Products.Count)
+                {
+                    Console.WriteLine("Некорректный ввод");
+                    product = null;
+                    return haveProducts;
+                }
 
                 product = Products[productId];
                 Money += product.Price;
