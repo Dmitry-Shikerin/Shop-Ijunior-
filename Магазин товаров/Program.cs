@@ -93,33 +93,6 @@ namespace Магазин_товаров
             FillProducts();
         }
 
-        private void FillProducts()
-        {
-            Products.Add(new Product("Яблоко", 15));
-            Products.Add(new Product("Груша", 17));
-            Products.Add(new Product("Авокадо", 25));
-            Products.Add(new Product("Арбуз", 150));
-        }
-
-        private int ReadInt()
-        {
-            int number = 0;
-
-            bool isNumber = false;
-
-            while (isNumber == false)
-            {
-                isNumber = int.TryParse(Console.ReadLine(), out number);
-
-                if (isNumber == false)
-                {
-                    Console.WriteLine("Ошибка. Введите число.");
-                }
-            }
-
-            return number;
-        }
-
         public bool SellProduct(out Product product)
         {
             bool haveProducts = false;
@@ -151,6 +124,33 @@ namespace Магазин_товаров
             }
 
             return haveProducts;
+        }
+
+        private void FillProducts()
+        {
+            Products.Add(new Product("Яблоко", 15));
+            Products.Add(new Product("Груша", 17));
+            Products.Add(new Product("Авокадо", 25));
+            Products.Add(new Product("Арбуз", 150));
+        }
+
+        private int ReadInt()
+        {
+            int number = 0;
+
+            bool isNumber = false;
+
+            while (isNumber == false)
+            {
+                isNumber = int.TryParse(Console.ReadLine(), out number);
+
+                if (isNumber == false)
+                {
+                    Console.WriteLine("Ошибка. Введите число.");
+                }
+            }
+
+            return number;
         }
     }
     class Buyer : Human
