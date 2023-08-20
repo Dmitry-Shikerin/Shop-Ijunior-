@@ -8,7 +8,7 @@ namespace Магазин_товаров
         static void Main(string[] args)
         {
             const string CommandShowListProducts = "1";
-            const string CommandBueProdukt = "2";
+            const string CommandBuyProduct = "2";
             const string CommandShowBuyerListProducts = "3";
 
             Seller seller = new Seller();
@@ -22,7 +22,7 @@ namespace Магазин_товаров
             while (isWork)
             {
                 Console.WriteLine($"{CommandShowListProducts} - Показать список товаров Продавца");
-                Console.WriteLine($"{CommandBueProdukt} - Купить товар");
+                Console.WriteLine($"{CommandBuyProduct} - Купить товар");
                 Console.WriteLine($"{CommandShowBuyerListProducts} - Показать список товаров покупателя");
                 string userInput = Console.ReadLine();
 
@@ -32,7 +32,7 @@ namespace Магазин_товаров
                         seller.ShowProducts();
                         break;
 
-                    case CommandBueProdukt:
+                    case CommandBuyProduct:
                         shop.TradeProduct();
                         break;
 
@@ -93,7 +93,7 @@ namespace Магазин_товаров
             FillProducts();
         }
 
-        public bool SellProduct(out Product product)
+        public bool TryToGet(out Product product)
         {
             bool haveProducts = false;
 
@@ -104,7 +104,7 @@ namespace Магазин_товаров
                 Console.WriteLine("Введите id товара");
                 int productId = ReadInt() - 1;
 
-                if (productId < 0 ||  productId >= Products.Count)
+                if (productId < 0 || productId >= Products.Count)
                 {
                     Console.WriteLine("Некорректный ввод");
                     product = null;
@@ -112,8 +112,6 @@ namespace Магазин_товаров
                 }
 
                 product = Products[productId];
-                Money += product.Price;
-                Products.Remove(product);
                 haveProducts = true;
                 return haveProducts;
             }
@@ -124,6 +122,12 @@ namespace Магазин_товаров
             }
 
             return haveProducts;
+        }
+
+        public void SellProduct(Product product)
+        {
+            Money += product.Price;
+            Products.Remove(product);
         }
 
         private void FillProducts()
@@ -157,20 +161,17 @@ namespace Магазин_товаров
     {
         public Buyer() : base(1000) { }
 
+        public bool CanPay(int productPrice)
+        {
+            return Money > productPrice;
+        }
+
         public void BuyProduct(Product product)
         {
             if (product != null)
             {
-                if (Money > product.Price)
-                {
-                    Products.Add(product);
-
-                    Money -= product.Price;
-                }
-                else
-                {
-                    Console.WriteLine("У вас недостаточно денег");
-                }
+                Products.Add(product);
+                Money -= product.Price;
             }
         }
     }
@@ -179,17 +180,28 @@ namespace Магазин_товаров
     {
         private Buyer _bayer = new Buyer();
         private Seller _seller = new Seller();
+        private Product _product;
 
-        public Shop(Buyer bayer, Seller seller) 
-        { 
+        public Shop(Buyer bayer, Seller seller)
+        {
             _bayer = bayer;
             _seller = seller;
         }
 
         public void TradeProduct()
         {
-            _seller.SellProduct(out Product product);
-            _bayer.BuyProduct(product);
+            if (_seller.TryToGet(out _product) == false)
+                return;
+
+            if (_bayer.CanPay(_product.Price))
+            {
+                _seller.SellProduct(_product);
+                _bayer.BuyProduct(_product);
+            }
+            else
+            {
+                Console.WriteLine("У вас недостаточно денег");
+            }
         }
     }
 }
