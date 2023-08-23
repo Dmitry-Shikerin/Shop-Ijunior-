@@ -13,7 +13,7 @@ namespace Магазин_товаров
 
             Seller seller = new Seller();
             Buyer buyer = new Buyer();
-            Shop shop = new Shop(buyer, seller);
+            Shop shop = new Shop();
 
             bool isWork = true;
 
@@ -33,7 +33,7 @@ namespace Магазин_товаров
                         break;
 
                     case CommandBuyProduct:
-                        shop.TradeProduct();
+                        shop.TradeProduct(seller, buyer);
                         break;
 
                     case CommandShowBuyerListProducts:
@@ -93,9 +93,9 @@ namespace Магазин_товаров
             FillProducts();
         }
 
-        public bool TryToGet(out Product product)
+        public bool TryToGetProduct(out Product product)
         {
-            bool haveProducts = false;
+            bool haveProduct = false;
 
             if (Products.Count > 0)
             {
@@ -108,12 +108,12 @@ namespace Магазин_товаров
                 {
                     Console.WriteLine("Некорректный ввод");
                     product = null;
-                    return haveProducts;
+                    return haveProduct;
                 }
 
                 product = Products[productId];
-                haveProducts = true;
-                return haveProducts;
+                haveProduct = true;
+                return haveProduct;
             }
             else
             {
@@ -121,7 +121,7 @@ namespace Магазин_товаров
                 product = null;
             }
 
-            return haveProducts;
+            return haveProduct;
         }
 
         public void SellProduct(Product product)
@@ -178,25 +178,15 @@ namespace Магазин_товаров
 
     class Shop
     {
-        private Buyer _bayer = new Buyer();
-        private Seller _seller = new Seller();
-        private Product _product;
-
-        public Shop(Buyer bayer, Seller seller)
+        public void TradeProduct(Seller seller, Buyer buyer)
         {
-            _bayer = bayer;
-            _seller = seller;
-        }
-
-        public void TradeProduct()
-        {
-            if (_seller.TryToGet(out _product) == false)
+            if (seller.TryToGetProduct(out Product product) == false)
                 return;
 
-            if (_bayer.CanPay(_product.Price))
+            if (buyer.CanPay(product.Price))
             {
-                _seller.SellProduct(_product);
-                _bayer.BuyProduct(_product);
+                seller.SellProduct(product);
+                buyer.BuyProduct(product);
             }
             else
             {
