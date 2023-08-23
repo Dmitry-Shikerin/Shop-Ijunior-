@@ -70,7 +70,7 @@ namespace Магазин_товаров
 
         public int Money { get; protected set; }
 
-        public void ShowProducts()
+        public virtual void ShowProducts()
         {
             if (Products.Count != 0)
             {
@@ -91,6 +91,13 @@ namespace Магазин_товаров
         public Seller() : base(0)
         {
             FillProducts();
+        }
+
+        public override void ShowProducts()
+        {
+            Console.WriteLine("Товары продавца");
+
+            base.ShowProducts();
         }
 
         public bool TryToGetProduct(out Product product)
@@ -164,6 +171,13 @@ namespace Магазин_товаров
         public bool CanPay(int productPrice)
         {
             return Money > productPrice;
+        }
+
+        public override void ShowProducts()
+        {
+            Console.WriteLine("Товары покупателя");
+
+            base.ShowProducts();
         }
 
         public void BuyProduct(Product product)
